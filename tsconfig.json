@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "CommonJS",
+		"target": "ESNext",
+		"resolveJsonModule": true,
+		"moduleResolution": "Node",
+		"allowJs": true,
+		"checkJs": true,
+		"lib": [
+			"ESNext",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"noEmit": true
+	},
+	"exclude": [
+		"node_modules"
+	]
+}
