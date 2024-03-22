@@ -14,7 +14,7 @@ import im from "./db_connect.js"
 const ec = txt => encodeURIComponent(txt)
 const dec = txt => decodeURIComponent(txt)
 const fetch = s => import('node-fetch').then(({default: fetch}) => fetch(s))
-const PORT = process.env.PORT || 3001
+const PORT = 3000
 im()
 
 
