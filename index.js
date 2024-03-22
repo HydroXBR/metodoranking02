@@ -3,7 +3,6 @@ import { join, basename, dirname } from "path"
 import * as path from 'path'
 import { fileURLToPath } from 'url';
 const { token } = process.env
-import db from 'quick.db'
 import express from 'express'
 import cors from 'cors'
 const app = express()
