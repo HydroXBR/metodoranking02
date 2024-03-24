@@ -166,6 +166,8 @@ async function generate_table() {
 
 generate_table().then(()=> addoptions())
 
+
+
 function addoptions(){
 	gebi("serie").addEventListener("click", (e) => {
  		gebi(e.target.id).addEventListener("change", (j) => {
