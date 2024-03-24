@@ -11,6 +11,16 @@ const gebi = id => document.getElementById(id)
 const gebc = c => document.getElementsByClassName(c)
 const voltar = gebi("voltar");
 
+const cid = new URL(window.location.href).searchParams.get("id")
+if(!cid){
+	alert("Erro ao carregar dados. Contate o administrador.")
+	window.location.href = '/ranking.html'
+}
+const id = new URL(window.location.href).searchParams.get("id").replace(/useridsearch/gmi,'').trim()
+gebi("ver").addEventListener('click', function(event){
+	window.location.href = '/respostas?id='+id
+})
+
 const round = (num, places) => {
 	if (!("" + num).includes("e")) {
 		return +(Math.round(num + "e+" + places)  + "e-" + places);
@@ -25,8 +35,6 @@ const round = (num, places) => {
 	}
 }
 
-const id = new URL(window.location.href).searchParams.get("id").replace(/useridsearch/gmi,'').trim()
-
 
 async function getuser() {
 	// Fetch API to get the positions and points
@@ -38,20 +46,39 @@ async function getuser() {
 	if(!rr) return alert("Usuário não encontrado! Contate Isaías Nascimento para mais informações.") 
 	rr.total = rr.port + rr.lit + rr.hist + rr.fis + rr.quim + rr.bio + rr.geo + rr.mat;
 
-	gebi("name").innerHTML = rr.name
-	gebi("serie").innerHTML = Number(rr.turma) > 3 ? `${Number(rr.turma) - 3}° ano` : `${Number(rr.turma)}° ano`
+	gebi("name").innerHTML = rr.completename
+	gebi("serie").innerHTML = Number(rr.turma) > 3 ? `${Number(rr.turma) - 3}° ano` : `${Number(rr.turma)}° ano`  
 
 	function preencherGraficos() {
 		const materias = [
-			{mat: "port", pont:rr.port, total: 10},
-			{mat: "lit", pont:rr.lit, total: 6},
-			{mat: "hist", pont:rr.hist, total: 6},
-			{mat: "geo", pont:rr.geo, total: 6},
-			{mat: "bio", pont:rr.bio, total: 6},
-			{mat: "quim", pont:rr.quim, total: 6},
-			{mat: "fis", pont:rr.fis, total: 6},
-			{mat: "mat", pont:rr.mat, total: 8}
+			{mat: "port", pont:rr.port, total: 10, comp: "Português"},
+			{mat: "lit", pont:rr.lit, total: 6, comp: "Literatura"},
+			{mat: "hist", pont:rr.hist, total: 6, comp: "História"},
+			{mat: "geo", pont:rr.geo, total: 6, comp: "Geografia"},
+			{mat: "bio", pont:rr.bio, total: 6, comp: "Biologia"},
+			{mat: "quim", pont:rr.quim, total: 6, comp: "Química"},
+			{mat: "fis", pont:rr.fis, total: 6, comp: "Física"},
+			{mat: "mat", pont:rr.mat, total: 8, comp: "Matemática"}
 		]
+
+		materias.forEach(materia => {
+			materia.porcentagem = (materia.pont / materia.total) * 100;
+		});
+
+		// Encontrar a maior porcentagem
+		const maxPorcentagem = Math.max(...materias.map(materia => materia.porcentagem));
+
+		// Filtrar matérias com a maior porcentagem
+		const materiasDestaque = materias.filter(materia => materia.porcentagem === maxPorcentagem);
+
+		for(var i = 0; i < materiasDestaque.length; i++){
+			let dt = gebi("destaques")
+			let span = document.createElement("span")
+			span.innerText = materiasDestaque[i].comp
+			span.classList.add("destaque")
+			dt.appendChild(span)
+			dt.appendChild(document.createElement("br"))
+		}
 
 		for(var i = 0; i<materias.length;i++){
 			console.log(materias[i].pont + '|' + materias[i].total)
