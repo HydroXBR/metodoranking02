@@ -265,6 +265,8 @@ function addevent(){
 					gebi(`correct${id}`).innerHTML = "✔️"
 				}else if(tselector.value == ""){
 					gebi(`correct${id}`).innerHTML = ""
+				}else if(gab == "X"){
+					gebi(`correct${id}`).innerHTML = "✔️"
 				}else{
 					gebi(`correct${id}`).innerHTML = "❌"
 				}
