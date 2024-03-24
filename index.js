@@ -3,14 +3,12 @@ import { join, basename, dirname } from "path"
 import * as path from 'path'
 import { fileURLToPath } from 'url';
 const { token } = process.env
-import db from 'quick.db'
 import express from 'express'
 import cors from 'cors'
 const app = express()
 import bodyParser from "body-parser"
 const __dirname = dirname(fileURLToPath(import.meta.url))
 import user from "./database/user.js"
-import Db from "mongodb"
 import im from "./db_connect.js"
 const ec = txt => encodeURIComponent(txt)
 const dec = txt => decodeURIComponent(txt)
