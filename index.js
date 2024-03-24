@@ -3,6 +3,7 @@ import { join, basename, dirname } from "path"
 import * as path from 'path'
 import { fileURLToPath } from 'url';
 const { token } = process.env
+import db from 'quick.db'
 import express from 'express'
 import cors from 'cors'
 const app = express()
@@ -75,8 +76,7 @@ app.use(
 	express.static(path.join(__dirname, '/interface'))
 );
 				
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(3000, () => {})
 
 
 app.set('view engine', 'ejs');
@@ -104,6 +104,11 @@ app.get('/check',function(req,res) {
   res.sendFile(__dirname + '/interface/check.html')
 })
 
+app.get('/respostas',function(req,res) {
+	console.log("Access: "+ new Date())
+	res.sendFile(__dirname + '/interface/respostas.html')
+})
+
 app.get('/ranking.html',function(req,res) {
 	console.log("Access: "+ new Date())
   res.sendFile(__dirname + '/interface/ranking.html')
@@ -128,8 +133,15 @@ app.get('/src',function(req,res) {
 
 
 app.get('/apianswers',function(req,res) {
-	let n = new URL("https://metodosimulados.yeshayahudesigndeveloper.repl.co" + req._parsedOriginalUrl.href).searchParams.get("serie") || "1"
-  res.sendFile(__dirname + `/answers${n}.json`)
+	let n = new URL("https://metodosimulados.yeshayahudesigndeveloper.repl.co" + req._parsedOriginalUrl.href).searchParams.get("serie") || null
+	if(!n){
+		res.sendStatus(404)
+	}else{
+		let t;
+		if (n > 3) t = n - 3
+		else t = n
+		res.sendFile(__dirname + `/answers${t}.json`)
+	}	
 })
 
 app.get(/useridsearch/gmi,function(req,res) {
@@ -234,9 +246,9 @@ app.get('/apiranking', function(req,res) {
 		const usersArray = new Array;
 		
 		for(var t = 0; t < r.length; t++){
-			let answers1 = ["A","B","B","C","C","E","C","B","B","E","A","A","E","E","E","B","C","D","E","B","B","B","B","A","C","A","A","C","B","C","B","A","D","A","C","A","B","C","D","A","D","C","B","C","E","A","D","A","C","B","B","C","E","C"]
-			let answers2 = []
-			let answers3 = []
+			let answers1 = ["B","A","A","A","A","D","D","D","B","E","A","A","B","E","B","C","D","D","A","B","B","B","A","C","E","E","C","C","A","C","B","E","C","A","C","E","A","B","D","C","C","E","D","A","C","B","C","B","C","C","D","D","E","C"]
+			let answers2 = ["D","B","A","A","B","E","A","B","A","B","A","E","C","B","D","E","E","B","A","C","C","C","E","E","E","E","E","C","B","C","D","A","E","C","D","C","B","E","A","A","D","E","E","D","C","C","C","B","C","B","C","D","E","E"]
+			let answers3 = ["B","A","A","X","A","B","B","C","C","E","C","E","B","E","B","A","B","C","E","E","C","D","D","B","B","C","E","A","C","C","B","E","D","D","E","C","B","E","A","C","B","D","A","D","A","C","E","A","C","A","C","B","B","C"]
 
 			let answersel;
 			if(Number(r[t].turma) == 1) answersel = answers1
@@ -264,16 +276,16 @@ app.get('/apiranking', function(req,res) {
 			let intervals = {
 				port: [1, 10],
 				lit: [11, 16],
-				bio: [23, 28],
-				fis: [41, 46],
+				hist: [17, 22],
+				geo: [23, 28],
+				bio: [29, 34],
 				quim: [35, 40],
-				hist: [35, 42],
-				geo: [29, 34],
-				mat: [47, 54]
+				mat: [41, 48],
+				fis: [49, 54]
 			};
 
 			for (var i = 0; i < 54; i++) {
-				if (arranswers[i] == answersel[i]) {
+				if (arranswers[i] == answersel[i] || answersel[i] == "X") {
 					pontos++;
 					for (const [key, value] of Object.entries(intervals)) {
 						if (i + 1 >= value[0] && i + 1 <= value[1]) {
@@ -284,11 +296,36 @@ app.get('/apiranking', function(req,res) {
 				}
 			}
 
+			function g(fullName) {
+					// Dividindo o nome completo em palavras
+					const words = fullName.trim().split(/\s+/);
+
+					// Preferência para o primeiro e segundo nome
+					const firstName = words[0];
+					const secondName = words[1];
+
+					// Verificar se o segundo nome está entre "de", "da", "dos", "das", "do", "henrique" ou "luiza"
+					if (["de", "da", "dos", "das", "do", "henrique", "luiza"].includes(secondName.toLowerCase())) {
+							// Verificar se o terceiro nome está entre "de", "da", "dos", "das" ou "do"
+							if (["de", "da", "dos", "das", "do"].includes(words[2].toLowerCase())) {
+									return `${firstName} ${secondName} ${words[2]} ${words[3]}`;
+							} else {
+									return `${firstName} ${secondName} ${words[2]}`;
+							}
+					}
+
+					// Caso contrário, exibir apenas o primeiro e o segundo nome
+					return `${firstName} ${secondName}`;
+			}
+
+
       const u = {
         user: {
-        	name: r[t].name,
+        	name: g(r[t].name),
+					completename: r[t].name,
 					turma: Number(r[t].turma) >= 4 ? Number(r[t].turma) - 3 : r[t].turma,
         	pont: pontos,
+					letras: r[t].answers.split(""),
 					port: pontosPorMateria.port,
 					lit: pontosPorMateria.lit,
 					bio: pontosPorMateria.bio,
