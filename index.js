@@ -245,8 +245,8 @@ app.get('/apiranking', function(req,res) {
 		
 		for(var t = 0; t < r.length; t++){
 			let answers1 = ["B","A","A","A","A","D","D","D","B","E","A","A","B","E","B","C","D","D","A","B","B","B","A","C","E","E","C","C","A","C","B","E","C","A","C","E","A","B","D","C","C","E","D","A","C","B","C","B","C","C","D","D","E","C"]
-			let answers2 = ["D","B","A","A","B","E","A","B","A","B","A","E","C","B","D","E","E","B","A","C","C","C","E","E","E","E","E","C","B","C","D","A","E","C","D","C","B","E","A","A","D","E","E","D","C","C","C","B","C","B","C","D","E","E"]
-			let answers3 = ["B","A","A","X","A","B","B","C","C","E","C","E","B","E","B","A","B","C","E","E","C","D","D","B","B","C","E","A","C","C","B","E","D","D","E","C","B","E","A","C","B","D","A","D","A","C","E","A","C","A","C","B","B","C"]
+			let answers2 = ["D","B","A","A","B","E","A","B","A","B","A","E","C","B","D","E","E","B","A","C","C","C","E","E","E","E","E","C","B","C","D","A","E","C","D","C","B","E","A","A","D","E","E","D","D","C","C","B","C","B","C","D","E","E"]
+			let answers3 = ["B","A","E","X","B","B","C","C","E","A","C","E","B","E","B","A","B","C","E","E","C","D","D","B","B","C","E","A","C","C","B","E","D","D","E","C","B","E","A","C","B","D","A","D","A","C","E","A","C","A","C","B","B","C"]
 
 			let answersel;
 			if(Number(r[t].turma) == 1) answersel = answers1
